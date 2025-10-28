@@ -1,0 +1,7 @@
+name: prescription_management_system
+
+environment:
+  sdk: ^3.9.2
+
+dev_dependencies:
+  test: ^1.25.6
