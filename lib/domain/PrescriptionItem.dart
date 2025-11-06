@@ -1,17 +1,26 @@
 import 'Medicine.dart';
 
 class PrescriptionItem {
-  // ATTRIBUTES  
-  String id;
-  Medicine medicine;
+  // ATTRIBUTES
+  final String id;
+  final Medicine medicine;
   String dosage;
   String frequency;
   String instruction;
   int quantity;
 
-  // CONSTRUCTORS
-  PrescriptionItem(this.id, this.medicine, this.dosage, this.frequency, this.instruction, this.quantity);
+  // CONSTRUCTOR
+  PrescriptionItem({
+    required this.id,
+    required this.medicine,
+    required this.dosage,
+    required this.frequency,
+    required this.instruction,
+    required this.quantity,
+  });
 
   // METHODS
-
+  double calculatePrice() {
+    return medicine.price * quantity;
+  }
 }

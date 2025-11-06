@@ -1,12 +1,13 @@
 class Doctor {
   // ATTRIBUTES  
-  String id;
+  final String id;
   String name;
   String email;
 
-  // CONSTRUCTORS
-  Doctor(this.id, this.name, this.email);
-
-  // METHODS
-
+  // CONSTRUCTOR
+  Doctor({
+    required this.id,
+    required this.name,
+    required this.email,
+  });
 }

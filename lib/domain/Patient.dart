@@ -1,18 +1,21 @@
 import 'Condition.dart';
 
-enum GENDER {male, female}
+enum GENDER { male, female, other }
 
 class Patient {
-  // ATTRIBUTES  
-  String id;
+  // ATTRIBUTES
+  final String id;
   String name;
   GENDER gender;
   String phoneNumber;
-  Condition condition;
+  Condition? condition;
 
-  // CONSTRUCTORS
-  Patient(this.id, this.name, this.gender, this.phoneNumber, this.condition);
-
-  // METHODS
-
+  // CONSTRUCTOR
+  Patient({
+    required this.id,
+    required this.name,
+    required this.gender,
+    required this.phoneNumber,
+    this.condition,
+  });
 }
