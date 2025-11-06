@@ -1,4 +1,4 @@
-import 'Medicine.dart';
+import 'medicine.domain.dart';
 
 class PrescriptionItem {
   // ATTRIBUTES

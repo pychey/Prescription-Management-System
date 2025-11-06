@@ -1,7 +1,7 @@
 import 'Doctor.dart';
-import 'Patient.dart';
+import 'patient.domain.dart';
 import 'PrescriptionItem.dart';
-import 'Medicine.dart';
+import 'medicine.domain.dart';
 
 class Prescription {
   // ATTRIBUTES

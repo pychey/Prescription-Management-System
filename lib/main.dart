@@ -1,82 +1,45 @@
-import 'domain/Doctor.dart';
-import 'domain/Medicine.dart';
-import 'domain/Patient.dart';
-import 'domain/Prescription.dart';
-import 'domain/PrescriptionItem.dart';
-import 'domain/PrescriptionSystem.dart';
+import 'package:prescription_management_system/domain/doctor.domain.dart';
+import 'package:prescription_management_system/domain/medicine.domain.dart';
+import 'package:prescription_management_system/domain/prescription_system.domain.dart';
+import 'package:prescription_management_system/ui/main.ui.dart';
 
-Doctor d1 = Doctor(
-  id: '1', 
-  name: 'Jam', 
-  email: 'gmail',
-  password: '123',  
-);
-Doctor d2 = Doctor(
-  id: '2', 
-  name: 'Jem', 
-  email: 'email', 
-  password: '123'
-);
+void main() {
+  final system = PrescriptionSystem();
+  final ui = MainUI(system);
 
-Patient p1 = Patient(
-  id: '1', 
-  name: 'Bob', 
-  gender: GENDER.male, 
-  phoneNumber: '123'
-);
-Patient p2 = Patient(
-  id: '2', 
-  name: 'Jeramy', 
-  gender: GENDER.female, 
-  phoneNumber: '456'
-);
+  system.registerDoctor(Doctor(
+    id: 'DR001',
+    name: 'John Smith',
+    username: 'drjohn',
+    password: 'pass123',
+  ));
 
-Medicine m1 = Medicine(
-  "M001",
-  "Paracetamol",
-  50,
-  10.0,
-  "Oral",
-  DateTime(2026, 5, 30),
-);
-Medicine m2 = Medicine(
-  "M002", 
-  "Ibuprofen",    
-  50,
-  5.0,
-  "Oral",
-  DateTime(2026, 5, 30), 
-);
+  system.addMedicine(Medicine(
+    id: 'MED001',
+    name: 'Paracetamol',
+    stockQuantity: 100,
+    price: 5.99,
+    usage: 'Pain relief and fever reduction',
+    expiryDate: DateTime(2026, 12, 31),
+  ));
 
-PrescriptionItem i1 = PrescriptionItem(
-  id: '1', 
-  medicine: m1, 
-  dosage: '500mg', 
-  frequency: '', 
-  instruction: '', 
-  quantity:  2
-);
-PrescriptionItem i2 = PrescriptionItem(
-  id: '2', 
-  medicine: m2, 
-  dosage: '200mg', 
-  frequency: '', 
-  instruction: '', 
-  quantity:  3
-);
+  system.addMedicine(Medicine(
+    id: 'MED002',
+    name: 'Amoxicillin',
+    stockQuantity: 50,
+    price: 12.50,
+    usage: 'Antibiotic for bacterial infections',
+    expiryDate: DateTime(2025, 6, 30),
+  ));
 
-void main () {
+  system.addMedicine(Medicine(
+    id: 'MED003',
+    name: 'Ibuprofen',
+    stockQuantity: 75,
+    price: 8.99,
+    usage: 'Anti-inflammatory and pain relief',
+    expiryDate: DateTime(2026, 3, 15),
+  ));
 
-  PrescriptionSystem system = new PrescriptionSystem([], [m1, m2], [d1, d2], [p1, p2]);
-
-  Prescription p = d1.writePrescription(
-    p1,
-    patientCondition: 'Flu',
-    notes: 'Hello'
-  );
-
-  p.addItem(m1, '', '', '', 10);
-  p.addItem(m2, '', '', '', 10);
-
-  print(p.getDetails());
+  ui.showMainMenu();
 }

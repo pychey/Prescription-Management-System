@@ -1,13 +1,11 @@
-enum GENDER { male, female, other }
+enum Gender { male, female }
 
 class Patient {
-  // ATTRIBUTES
-  final String id;
+  String id;
   String name;
-  final GENDER gender;
+  Gender gender;
   String phoneNumber;
 
-  // CONSTRUCTOR
   Patient({
     required this.id,
     required this.name,

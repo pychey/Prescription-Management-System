@@ -1,4 +1,4 @@
-import 'Patient.dart';
+import 'patient.domain.dart';
 import 'Prescription.dart';
 
 class Doctor {
