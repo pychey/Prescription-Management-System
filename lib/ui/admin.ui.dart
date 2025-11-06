@@ -4,8 +4,8 @@ import 'package:prescription_management_system/domain/prescription.domain.dart';
 import 'package:prescription_management_system/domain/prescription_system.domain.dart';
 import 'package:prescription_management_system/ui/base.ui.dart';
 
-class AdminUI extends BaseUI {
-  AdminUI(PrescriptionSystem system) : super(system);
+class AdminConsole extends BaseConsole {
+  AdminConsole(PrescriptionSystem system) : super(system);
 
   void showAdminMenu() {
     while (true) {
@@ -16,9 +16,9 @@ class AdminUI extends BaseUI {
       print('3. Manage Patients');
       print('4. Manage Prescriptions');
       print('0. Back');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
@@ -49,7 +49,7 @@ class AdminUI extends BaseUI {
       showHeader('DOCTOR MANAGEMENT');
 
       if (system.doctors.isEmpty) {
-        print('No doctors registered.\n');
+        print('No Doctors Registered Yet.\n');
       } else {
         print('REGISTERED DOCTORS:');
         for (var i = 0; i < system.doctors.length; i++) {
@@ -59,18 +59,18 @@ class AdminUI extends BaseUI {
         print('');
       }
 
-      print('1. View Doctor Details');
-      print('2. Register New Doctor');
-      print('3. Update Doctor');
-      print('4. Remove Doctor');
+      print('1. View Doctor By ID');
+      print('2. Register Doctor');
+      print('3. Update Doctor By ID');
+      print('4. Remove Doctor By ID');
       print('0. Back');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
-          viewDoctorDetails();
+          viewDoctor();
           break;
         case '2':
           registerDoctor();
@@ -87,18 +87,18 @@ class AdminUI extends BaseUI {
     }
   }
 
-  void viewDoctorDetails() {
+  void viewDoctor() {
     if (system.doctors.isEmpty) {
-      print('No doctors to view.');
+      print('No Doctors to View.');
       pause();
       return;
     }
 
-    final id = readInput('\nEnter doctor ID: ');
+    final id = readInput('\nEnter Doctor ID: ');
     final doctor = system.getDoctorById(id);
 
     if (doctor == null) {
-      print('Doctor not found.');
+      print('Doctor Not Found.');
       pause();
       return;
     }
@@ -115,41 +115,39 @@ class AdminUI extends BaseUI {
     clearScreen();
     showHeader('REGISTER NEW DOCTOR');
 
-    final id = 'DR${DateTime.now().millisecondsSinceEpoch}';
-    final name = readInput('Enter name: ');
-    final username = readInput('Enter username: ');
-    final password = readInput('Enter password: ');
+    final name = readInput('Enter Name: ');
+    final username = readInput('Enter Username: ');
+    final password = readInput('Enter Password: ');
 
     if (name.isEmpty || username.isEmpty || password.isEmpty) {
-      print('All fields are required!');
+      print('All Fields are Required!');
       pause();
       return;
     }
 
     final doctor = Doctor(
-      id: id,
       name: name,
       username: username,
       password: password,
     );
 
     system.registerDoctor(doctor);
-    print('\n✓ Doctor registered successfully! ID: $id');
+    print('\nDoctor Registered Successfully! ID: ${doctor.id}');
     pause();
   }
 
   void updateDoctor() {
     if (system.doctors.isEmpty) {
-      print('No doctors to update.');
+      print('No Doctors to Update.');
       pause();
       return;
     }
 
-    final id = readInput('\nEnter doctor ID to update: ');
+    final id = readInput('\nEnter Doctor ID to Update: ');
     final doctor = system.getDoctorById(id);
 
     if (doctor == null) {
-      print('Doctor not found.');
+      print('Doctor Not Found.');
       pause();
       return;
     }
@@ -158,41 +156,41 @@ class AdminUI extends BaseUI {
     showHeader('UPDATE DOCTOR');
     print('Current: ${doctor.name}\n');
 
-    final name = readInput('Enter new name [${doctor.name}]: ');
-    final username = readInput('Enter new username [${doctor.username}]: ');
-    final password = readInput('Enter new password (leave empty to keep): ');
+    final name = readInput('Enter New Name [${doctor.name}]: ');
+    final username = readInput('Enter New Username [${doctor.username}]: ');
+    final password = readInput('Enter New Password (Leave Empty to Keep): ');
 
     if (name.isNotEmpty) doctor.name = name;
     if (username.isNotEmpty) doctor.username = username;
     if (password.isNotEmpty) doctor.password = password;
 
     system.updateDoctor(doctor.id, doctor);
-    print('\n✓ Doctor updated successfully!');
+    print('\nDoctor Updated Successfully!');
     pause();
   }
 
   void removeDoctor() {
     if (system.doctors.isEmpty) {
-      print('No doctors to remove.');
+      print('No Doctors to Remove.');
       pause();
       return;
     }
 
-    final id = readInput('\nEnter doctor ID to remove: ');
+    final id = readInput('\nEnter Doctor ID to Remove: ');
     final doctor = system.getDoctorById(id);
 
     if (doctor == null) {
-      print('Doctor not found.');
+      print('Doctor Not Found.');
       pause();
       return;
     }
 
-    print('Are you sure you want to remove Dr. ${doctor.name}? (yes/no)');
+    print('Are You Sure to Remove Dr. ${doctor.name}? (Y/N)');
     final confirm = readInput('> ');
 
-    if (confirm.toLowerCase() == 'yes') {
+    if (confirm.toLowerCase() == 'y') {
       system.removeDoctor(id);
-      print('\n✓ Doctor removed successfully!');
+      print('\nDoctor Removed Successfully!');
     } else {
       print('Cancelled.');
     }
@@ -209,7 +207,7 @@ class AdminUI extends BaseUI {
       showHeader('MEDICINE MANAGEMENT');
 
       if (system.medicines.isEmpty) {
-        print('No medicines registered.\n');
+        print('No Medicines Registered.\n');
       } else {
         print('REGISTERED MEDICINES:');
         for (var i = 0; i < system.medicines.length; i++) {
@@ -220,14 +218,14 @@ class AdminUI extends BaseUI {
         print('');
       }
 
-      print('1. View Medicine Details');
-      print('2. Add New Medicine');
-      print('3. Update Medicine');
-      print('4. Remove Medicine');
+      print('1. View Medicine By ID');
+      print('2. Add Medicine');
+      print('3. Update Medicine By ID');
+      print('4. Remove Medicine By ID');
       print('0. Back');
       print('═══════════════════════════════════════');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
@@ -250,16 +248,16 @@ class AdminUI extends BaseUI {
 
   void viewMedicineDetails() {
     if (system.medicines.isEmpty) {
-      print('No medicines to view.');
+      print('No Medicines to View.');
       pause();
       return;
     }
 
-    final id = readInput('\nEnter medicine ID: ');
+    final id = readInput('\nEnter Medicine ID: ');
     final medicine = system.getMedicineById(id);
 
     if (medicine == null) {
-      print('Medicine not found.');
+      print('Medicine Not Found.');
       pause();
       return;
     }
@@ -280,12 +278,11 @@ class AdminUI extends BaseUI {
     clearScreen();
     showHeader('ADD NEW MEDICINE');
 
-    final id = 'MED${DateTime.now().millisecondsSinceEpoch}';
-    final name = readInput('Enter name: ');
-    final stockStr = readInput('Enter stock quantity: ');
-    final priceStr = readInput('Enter price: ');
-    final usage = readInput('Enter usage: ');
-    final expiryStr = readInput('Enter expiry date (YYYY-MM-DD): ');
+    final name = readInput('Enter Name: ');
+    final stockStr = readInput('Enter Stock Auantity: ');
+    final priceStr = readInput('Enter Price: ');
+    final usage = readInput('Enter Usage: ');
+    final expiryStr = readInput('Enter Expiry Date (YYYY-MM-DD): ');
 
     final stock = int.tryParse(stockStr) ?? 0;
     final price = double.tryParse(priceStr) ?? 0.0;
@@ -295,11 +292,10 @@ class AdminUI extends BaseUI {
       expiry = DateTime.parse(expiryStr);
     } catch (e) {
       expiry = DateTime.now().add(Duration(days: 365));
-      print('Invalid date format, using default (1 year from now)');
+      print('Invalid Date Format, Using Default (1 Year From Now)');
     }
 
     final medicine = Medicine(
-      id: id,
       name: name,
       stockQuantity: stock,
       price: price,
@@ -308,22 +304,22 @@ class AdminUI extends BaseUI {
     );
 
     system.addMedicine(medicine);
-    print('\n✓ Medicine added successfully! ID: $id');
+    print('\nMedicine Added Successfully! ID: ${medicine.id}');
     pause();
   }
 
   void updateMedicine() {
     if (system.medicines.isEmpty) {
-      print('No medicines to update.');
+      print('No Medicines to Update.');
       pause();
       return;
     }
 
-    final id = readInput('\nEnter medicine ID to update: ');
+    final id = readInput('\nEnter Medicine ID to Update: ');
     final medicine = system.getMedicineById(id);
 
     if (medicine == null) {
-      print('Medicine not found.');
+      print('Medicine Not Found.');
       pause();
       return;
     }
@@ -347,7 +343,7 @@ class AdminUI extends BaseUI {
     if (usage.isNotEmpty) medicine.usage = usage;
 
     system.updateMedicine(id, medicine);
-    print('\n✓ Medicine updated successfully!');
+    print('\nMedicine Updated Successfully!');
     pause();
   }
 
@@ -367,12 +363,12 @@ class AdminUI extends BaseUI {
       return;
     }
 
-    print('Are you sure you want to remove ${medicine.name}? (yes/no)');
+    print('Are you sure you want to remove ${medicine.name}? (Y/N)');
     final confirm = readInput('> ');
 
-    if (confirm.toLowerCase() == 'yes') {
+    if (confirm.toLowerCase() == 'y') {
       system.removeMedicine(id);
-      print('\n✓ Medicine removed successfully!');
+      print('\nMedicine removed successfully!');
     } else {
       print('Cancelled.');
     }
@@ -399,13 +395,13 @@ class AdminUI extends BaseUI {
         print('');
       }
 
-      print('1. View Patient Details');
-      print('2. Update Patient');
-      print('3. Remove Patient');
+      print('1. View Patient By ID');
+      print('2. Update Patient By ID');
+      print('3. Remove Patient By ID');
       print('0. Back');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
@@ -475,7 +471,7 @@ class AdminUI extends BaseUI {
     if (phone.isNotEmpty) patient.phoneNumber = phone;
 
     system.updatePatient(id, patient);
-    print('\n✓ Patient updated successfully!');
+    print('\nPatient updated successfully!');
     pause();
   }
 
@@ -495,12 +491,12 @@ class AdminUI extends BaseUI {
       return;
     }
 
-    print('Are you sure you want to remove ${patient.name}? (yes/no)');
+    print('Are you sure you want to remove ${patient.name}? (Y/N)');
     final confirm = readInput('> ');
 
-    if (confirm.toLowerCase() == 'yes') {
+    if (confirm.toLowerCase() == 'y') {
       system.removePatient(id);
-      print('\n✓ Patient removed successfully!');
+      print('\nPatient removed successfully!');
     } else {
       print('Cancelled.');
     }
@@ -533,7 +529,7 @@ class AdminUI extends BaseUI {
       print('3. View by Doctor ID');
       print('4. Remove Prescription');
       print('0. Back');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
       final choice = readInput('Select option: ');
 
@@ -721,12 +717,12 @@ class AdminUI extends BaseUI {
       return;
     }
 
-    print('Are you sure you want to remove prescription ${rx.id}? (yes/no)');
+    print('Are you sure you want to remove prescription ${rx.id}? (Y/N)');
     final confirm = readInput('> ');
 
-    if (confirm.toLowerCase() == 'yes') {
+    if (confirm.toLowerCase() == 'y') {
       system.removePrescription(id);
-      print('\n✓ Prescription removed successfully!');
+      print('\nPrescription removed successfully!');
     } else {
       print('Cancelled.');
     }

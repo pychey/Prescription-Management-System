@@ -1,17 +1,17 @@
 import 'package:prescription_management_system/domain/doctor.domain.dart';
 import 'package:prescription_management_system/domain/medicine.domain.dart';
 import 'package:prescription_management_system/domain/prescription_system.domain.dart';
-import 'package:prescription_management_system/ui/main.ui.dart';
+import 'package:prescription_management_system/ui/system.ui.dart';
 
 void main() {
   final system = PrescriptionSystem();
-  final ui = MainUI(system);
+  final ui = SystemConsole(system);
 
   system.registerDoctor(Doctor(
     id: 'DR001',
-    name: 'John Smith',
-    username: 'drjohn',
-    password: 'pass123',
+    name: 'Ronan The Best',
+    username: 'pychey',
+    password: 'pychey',
   ));
 
   system.addMedicine(Medicine(
@@ -19,7 +19,7 @@ void main() {
     name: 'Paracetamol',
     stockQuantity: 100,
     price: 5.99,
-    usage: 'Pain relief and fever reduction',
+    usage: 'Pain Relief and Fever Reduction',
     expiryDate: DateTime(2026, 12, 31),
   ));
 
@@ -28,7 +28,7 @@ void main() {
     name: 'Amoxicillin',
     stockQuantity: 50,
     price: 12.50,
-    usage: 'Antibiotic for bacterial infections',
+    usage: 'Antibiotic for Bacterial Infections',
     expiryDate: DateTime(2025, 6, 30),
   ));
 
@@ -37,7 +37,7 @@ void main() {
     name: 'Ibuprofen',
     stockQuantity: 75,
     price: 8.99,
-    usage: 'Anti-inflammatory and pain relief',
+    usage: 'Anti-Inflammatory and Pain Relief',
     expiryDate: DateTime(2026, 3, 15),
   ));
 

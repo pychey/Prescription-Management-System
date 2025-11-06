@@ -1,3 +1,7 @@
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
+
 class Medicine {
   String id;
   String name;
@@ -7,13 +11,13 @@ class Medicine {
   DateTime expiryDate;
 
   Medicine({
-    required this.id,
+    String? id,
     required this.name,
     required this.stockQuantity,
     required this.price,
     required this.usage,
     required this.expiryDate,
-  });
+  }): id = id ?? uuid.v4();
 
   bool isExpired() => DateTime.now().isAfter(expiryDate);
   
@@ -25,5 +29,13 @@ class Medicine {
     } else {
       throw Exception('Insufficient stock');
     } 
+  }
+
+  void updateInfo({String? name, int? stockQuantity, double? price, String? usage, DateTime? expiryDate }) {
+    if (name != null) this.name = name;
+    if (stockQuantity != null) this.stockQuantity = stockQuantity;
+    if (price != null) this.price = price;
+    if (usage != null) this.usage = usage;
+    if (expiryDate != null) this.expiryDate = expiryDate;
   }
 }

@@ -5,3 +5,4 @@ environment:
 
 dev_dependencies:
   test: ^1.25.6
+  uuid: ^4.4.2

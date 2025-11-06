@@ -4,8 +4,9 @@ import 'package:prescription_management_system/domain/prescription_item.domain.d
 import 'package:prescription_management_system/domain/prescription_system.domain.dart';
 import 'package:prescription_management_system/ui/base.ui.dart';
 
-class DoctorUI extends BaseUI {
-  DoctorUI(PrescriptionSystem system) : super(system);
+// NEED PRESCRIPTION VIEW LINE 282
+class DoctorConsole extends BaseConsole {
+  DoctorConsole(PrescriptionSystem system) : super(system);
 
   void showDoctorMenu() {
     while (true) {
@@ -15,9 +16,9 @@ class DoctorUI extends BaseUI {
       print('2. View Your Patients');
       print('3. View Medicines');
       print('0. Logout');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
@@ -43,28 +44,58 @@ class DoctorUI extends BaseUI {
     clearScreen();
     showHeader('WRITE PRESCRIPTION');
     print('1. Register New Patient');
+    print('2. Select Existing Patient');
     print('0. Back');
-    print('═══════════════════════════════════════');
+    print('=======================================');
 
-    final choice = readInput('Select option: ');
+    final choice = readInput('Select Option: ');
 
-    if (choice == '1') {
-      final patient = registerNewPatient();
-      if (patient != null) {
-        createPrescription(patient);
-      }
+    switch (choice) {
+      case '1':
+        handleRegisterPatient();
+        break;
+      case '2':
+        handleSelectPatient();
+        break;
+      case '0':
+        return;
     }
   }
 
-  Patient? registerNewPatient() {
+  void handleSelectPatient() {
+    clearScreen();
+    showHeader('SELECT EXISTING PATIENT');
+
+    if (system.patients.isEmpty) {
+      print('No Registered Patients.');
+      pause();
+      return;
+    }
+
+    for (var i = 0; i < system.patients.length; i++) {
+      final patient = system.patients[i];
+      print('${i + 1}. ${patient.name} (ID: ${patient.id})');
+    }
+    print('0. Back');
+    print('=======================================');
+
+    final choice = readInput('Select Patient: ');
+    final index = int.tryParse(choice);
+
+    if (index != null && index > 0 && index <= system.patients.length) {
+      final patient = system.patients[index - 1];
+      createPrescription(patient);
+    }
+  }
+
+  void handleRegisterPatient() {
     clearScreen();
     showHeader('REGISTER NEW PATIENT');
 
-    final id = 'PT${DateTime.now().millisecondsSinceEpoch}';
-    final name = readInput('Enter name: ');
+    final name = readInput('Enter Patient Name: ');
     if (name.isEmpty) return null;
 
-    print('\nSelect gender:');
+    print('\nSelect Gender:');
     print('1. Male');
     print('2. Female');
     final genderChoice = readInput('Choice: ');
@@ -74,51 +105,37 @@ class DoctorUI extends BaseUI {
       gender = Gender.female;
     }
 
-    final phone = readInput('Enter phone number: ');
+    final phoneNumber = readInput('Enter Phone Number: ');
 
-    final patient = Patient(
-      id: id,
-      name: name,
-      gender: gender,
-      phoneNumber: phone,
-    );
+    var patient = system.currentDoctor!.registerPatient(name: name, gender: gender, phoneNumber: phoneNumber);
 
-    system.registerPatient(patient);
-    print('\nPatient registered successfully! ID: $id');
-    pause();
-
-    return patient;
+    system.addPatient(patient);
+    print('\nPatient Registered Successfully! ID: ${patient.id}');
+    
+    createPrescription(patient);
   }
 
   void createPrescription(Patient patient) {
     clearScreen();
     showHeader('CREATE PRESCRIPTION');
     print('Patient: ${patient.name}');
-    print('═══════════════════════════════════════');
+    print('=======================================');
 
     final condition = readInput('Enter Patient Condition: ');
     if (condition.isEmpty) return;
 
-    final prescription = Prescription(
-      id: 'RX${DateTime.now().millisecondsSinceEpoch}',
-      notes: '',
-      issuedDate: DateTime.now(),
-      patientCondition: condition,
-      doctorId: system.currentDoctor!.id,
-      patientId: patient.id,
-    );
+    var prescription = system.currentDoctor!.writePrescription(patient, patientCondition: condition);                                                        
 
-    print('\nPrescription created. Now add medicines...');
+    print('\nPrescription Created. Now Add Medicines...');
     pause();
 
     managePrescriptionItems(prescription);
 
-    // Save prescription after items are added
     if (prescription.items.isNotEmpty) {
       system.addPrescription(prescription);
-      print('\n✓ Prescription saved successfully!');
+      print('\nPrescription Saved successfully!');
     } else {
-      print('\n✗ Prescription cancelled (no items added).');
+      print('\nPrescription Cancelled (No Items Added).');
     }
     pause();
   }
@@ -135,14 +152,15 @@ class DoctorUI extends BaseUI {
       print('───────────────────────────────────────');
 
       if (prescription.items.isEmpty) {
-        print('No items added yet.');
+        print('No Items Added Yet.');
       } else {
         for (var i = 0; i < prescription.items.length; i++) {
           final item = prescription.items[i];
           final medicine = system.getMedicineById(item.medicineId);
-          print('${i + 1}. ${medicine?.name ?? "Unknown"} - ${item.quantity}x');
+          print('${i + 1}. ${medicine?.name ?? "Unknown"}');
           print('   Dosage: ${item.dosage}');
           print('   Frequency: ${item.frequency}');
+          print('   Quantity: - ${item.quantity}');
           print('   Duration: ${item.getDuration()}');
         }
       }
@@ -152,9 +170,9 @@ class DoctorUI extends BaseUI {
       print('2. Remove Item');
       print('3. Add Notes');
       print('0. Finish');
-      print('═══════════════════════════════════════');
+      print('=======================================');
 
-      final choice = readInput('Select option: ');
+      final choice = readInput('Select Option: ');
 
       switch (choice) {
         case '1':
@@ -164,8 +182,8 @@ class DoctorUI extends BaseUI {
           removeItemFromPrescription(prescription);
           break;
         case '3':
-          prescription.notes = readInput('Enter notes: ');
-          print('Notes saved!');
+          prescription.notes = readInput('Enter Notes: ');
+          print('Notes Saved!');
           pause();
           break;
         case '0':
@@ -181,7 +199,7 @@ class DoctorUI extends BaseUI {
     final availableMedicines = system.getAvailableMedicines();
     
     if (availableMedicines.isEmpty) {
-      print('No available medicines (check stock and expiry).');
+      print('No Available Medicines (Check Stock and Expiry).');
       pause();
       return;
     }
@@ -195,34 +213,33 @@ class DoctorUI extends BaseUI {
       print('');
     }
     print('0. Back');
-    print('═══════════════════════════════════════');
+    print('=======================================');
 
-    final choice = readInput('Select medicine: ');
+    final choice = readInput('Select Medicine: ');
     final index = int.tryParse(choice);
 
     if (index != null && index > 0 && index <= availableMedicines.length) {
       final medicine = availableMedicines[index - 1];
 
-      final dosage = readInput('Enter dosage (e.g., 500mg): ');
-      final frequency = readInput('Enter frequency (e.g., 3 times daily): ');
-      final instruction = readInput('Enter instruction (e.g., After meals): ');
-      final quantityStr = readInput('Enter quantity (max ${medicine.stockQuantity}): ');
+      final dosage = readInput('Enter Dosage: ');
+      final frequency = readInput('Enter Frequency: ');
+      final instruction = readInput('Enter Instruction: ');
+      final quantityStr = readInput('Enter Quantity (inStock: ${medicine.stockQuantity}): ');
       final quantity = int.tryParse(quantityStr) ?? 0;
 
       if (quantity <= 0) {
-        print('Invalid quantity!');
+        print('Invalid Quantity!');
         pause();
         return;
       }
 
       if (quantity > medicine.stockQuantity) {
-        print('Insufficient stock! Available: ${medicine.stockQuantity}');
+        print('Insufficient Stock! Available: ${medicine.stockQuantity}');
         pause();
         return;
       }
 
       final item = PrescriptionItem(
-        id: 'ITEM${DateTime.now().millisecondsSinceEpoch}',
         medicineId: medicine.id,
         dosage: dosage,
         frequency: frequency,
@@ -231,14 +248,14 @@ class DoctorUI extends BaseUI {
       );
 
       prescription.addItem(item);
-      print('\n✓ Medicine added successfully!');
+      print('\nMedicine added successfully!');
       pause();
     }
   }
 
   void removeItemFromPrescription(Prescription prescription) {
     if (prescription.items.isEmpty) {
-      print('No items to remove.');
+      print('No Items to Remove.');
       pause();
       return;
     }
@@ -252,12 +269,12 @@ class DoctorUI extends BaseUI {
       print('${i + 1}. ${medicine?.name ?? "Unknown"}');
     }
 
-    final choice = readInput('\nSelect item to remove: ');
+    final choice = readInput('\nSelect Item to Remove: ');
     final index = int.tryParse(choice);
 
     if (index != null && index > 0 && index <= prescription.items.length) {
       prescription.items.removeAt(index - 1);
-      print('\n✓ Item removed!');
+      print('\nItem removed!');
       pause();
     }
   }
@@ -270,7 +287,7 @@ class DoctorUI extends BaseUI {
     final patientIds = myPrescriptions.map((p) => p.patientId).toSet();
 
     if (patientIds.isEmpty) {
-      print('You have no patients yet.');
+      print('You Have No Patients Yet.');
     } else {
       for (var patientId in patientIds) {
         final patient = system.getPatientById(patientId);
@@ -293,7 +310,7 @@ class DoctorUI extends BaseUI {
     final availableMedicines = system.getAvailableMedicines();
 
     if (availableMedicines.isEmpty) {
-      print('No medicines available.');
+      print('No Medicines Available.');
     } else {
       for (var medicine in availableMedicines) {
         print('─────────────────────────────');

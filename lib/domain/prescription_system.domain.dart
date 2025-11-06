@@ -10,10 +10,11 @@ class PrescriptionSystem {
   final List<Prescription> prescriptions = [];
   Doctor? currentDoctor;
 
-  // Doctor Management
-  void registerDoctor(Doctor doctor) => doctors.add(doctor);
+  // ====================
+  // DOCTOR MANAGEMENT
+  // ====================
 
-  List<Doctor> getDoctors() => doctors;
+  void registerDoctor(Doctor doctor) => doctors.add(doctor);
 
   Doctor? getDoctorById(String id) {
     try {
@@ -30,7 +31,7 @@ class PrescriptionSystem {
 
   void removeDoctor(String id) => doctors.removeWhere((d) => d.id == id);
 
-  bool login(String username, String password) {
+  bool loginAsDoctor(String username, String password) {
     try {
       currentDoctor = doctors.firstWhere(
         (d) => d.username == username && d.password == password,
@@ -41,10 +42,11 @@ class PrescriptionSystem {
     }
   }
 
-  // Patient Management
-  void registerPatient(Patient patient) => patients.add(patient);
+  // ====================
+  // PATIENT MANAGEMENT
+  // ====================
 
-  List<Patient> getPatients() => patients;
+  void addPatient(Patient patient) => patients.add(patient);
 
   Patient? getPatientById(String id) {
     try {
@@ -61,10 +63,11 @@ class PrescriptionSystem {
 
   void removePatient(String id) => patients.removeWhere((p) => p.id == id);
 
-  // Medicine Management
+  // ====================
+  // MEDICINE MANAGEMENT
+  // ====================
+  
   void addMedicine(Medicine medicine) => medicines.add(medicine);
-
-  List<Medicine> getMedicines() => medicines;
 
   List<Medicine> getAvailableMedicines() {
     return medicines.where((m) => !m.isExpired() && m.stockQuantity > 0).toList();
@@ -85,9 +88,11 @@ class PrescriptionSystem {
 
   void removeMedicine(String id) => medicines.removeWhere((m) => m.id == id);
 
-  // Prescription Management
+  // ====================
+  // PRESCRIPTION MANAGEMENT
+  // ====================
+  
   void addPrescription(Prescription prescription) {
-    // Reduce stock for each medicine in the prescription
     for (var item in prescription.items) {
       final medicine = getMedicineById(item.medicineId);
       if (medicine != null) {
@@ -96,8 +101,6 @@ class PrescriptionSystem {
     }
     prescriptions.add(prescription);
   }
-
-  List<Prescription> getPrescriptions() => prescriptions;
 
   Prescription? getPrescriptionById(String id) {
     try {

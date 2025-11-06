@@ -1,5 +1,8 @@
 import 'package:prescription_management_system/domain/medicine.domain.dart';
 import 'package:prescription_management_system/domain/prescription_item.domain.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class Prescription {
   String id;
@@ -11,14 +14,13 @@ class Prescription {
   List<PrescriptionItem> items;
 
   Prescription({
-    required this.id,
-    required this.notes,
-    required this.issuedDate,
+    String? id,
+    String? notes,
     required this.patientCondition,
     required this.doctorId,
     required this.patientId,
     List<PrescriptionItem>? items,
-  }) : items = items ?? [];
+  }) : id = id ?? uuid.v4(), notes = notes ?? '', issuedDate = DateTime.now(), items = items ?? [];
 
   void addItem(PrescriptionItem item) => items.add(item);
 
@@ -35,9 +37,9 @@ class Prescription {
     for (var item in items) {
       try {
         final medicine = medicines.firstWhere((m) => m.id == item.medicineId);
-        total += item.calculatePrice(medicine);
+        total += item.getPrice(medicine);
       } catch (e) {
-        // Medicine not found, skip
+        // SKIP
       }
     }
     return total;

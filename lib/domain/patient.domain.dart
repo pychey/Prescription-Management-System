@@ -1,3 +1,7 @@
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
+
 enum Gender { male, female }
 
 class Patient {
@@ -7,9 +11,9 @@ class Patient {
   String phoneNumber;
 
   Patient({
-    required this.id,
+    String? id,
     required this.name,
     required this.gender,
     required this.phoneNumber,
-  });
+  }): id = id ?? uuid.v4();
 }

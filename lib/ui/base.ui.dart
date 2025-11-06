@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:prescription_management_system/domain/prescription_system.domain.dart';
 
-class BaseUI {
+class BaseConsole {
   final PrescriptionSystem system;
 
-  BaseUI(this.system);
+  BaseConsole(this.system);
 
   String readInput(String prompt) {
     stdout.write(prompt);
@@ -20,13 +20,13 @@ class BaseUI {
   }
 
   void showHeader(String title) {
-    print('═══════════════════════════════════════');
+    print('=======================================');
     print('   $title');
-    print('═══════════════════════════════════════');
+    print('=======================================');
   }
 
   void pause() {
-    print('\nPress Enter to continue...');
+    print('\nPress Enter to Continue...');
     stdin.readLineSync();
   }
 }
