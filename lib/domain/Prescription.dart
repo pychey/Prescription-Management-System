@@ -10,6 +10,7 @@ class Prescription {
   final Doctor doctor;
   final Patient patient;  
   DateTime issuedDate;
+  String patientCondition;
   final List<PrescriptionItem> items = [];
 
   // CONSTRUCTORS
@@ -17,6 +18,7 @@ class Prescription {
     required this.id,
     required this.doctor,
     required this.patient,
+    required this.patientCondition,
     this.notes = '',
   }) : issuedDate = DateTime.now();
 
@@ -60,6 +62,7 @@ class Prescription {
     buffer.writeln('Prescription ID: $id');
     buffer.writeln('Doctor: ${doctor.name}');
     buffer.writeln('Patient: ${patient.name}');
+    buffer.writeln('Patient Condition: $patientCondition'); 
     buffer.writeln('Issued Date: ${issuedDate.toLocal()}');
     buffer.writeln('Notes: $notes');
     buffer.writeln('\nItems:');
@@ -71,6 +74,11 @@ class Prescription {
     buffer.writeln('\nTotal Price: \$${getTotalPrice().toStringAsFixed(2)}');
     return buffer.toString();
   }
+  
+  void updateInfo({String? newNotes, String? newCondition}) {
+    if (newNotes != null) notes = newNotes;
+    if (newCondition != null) patientCondition = newCondition;
+  }
 
   double getTotalPrice() {
     double total = 0;
@@ -81,3 +89,4 @@ class Prescription {
     return total;
   }
 }
+
