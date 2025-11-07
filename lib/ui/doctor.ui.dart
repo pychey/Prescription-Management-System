@@ -280,24 +280,102 @@ class DoctorConsole extends BaseConsole {
   }
 
   void viewMyPatients() {
+    while (true) {
+      clearScreen();
+      showHeader('YOUR PATIENTS');
+
+      final myPrescriptions = system.getPrescriptionsByDoctorId(system.currentDoctor!.id);
+      final patientIds = myPrescriptions.map((p) => p.patientId).toSet();
+
+      if (patientIds.isEmpty) {
+        print('You Have No Patients Yet.\n');
+      } else {
+        for (var patientId in patientIds) {
+          final patient = system.getPatientById(patientId);
+          if (patient != null) {
+            print('• ${patient.name}');
+            print('  Phone: ${patient.phoneNumber}');
+            print('  Gender: ${patient.gender.toString().split('.').last}');
+            print('');
+          }
+        }
+      }
+
+      print('1. View Prescriptions By Patient ID');
+      print('0. Back');
+      print('=======================================');
+
+      final choice = readInput('Select Option: ');
+
+      switch (choice) {
+        case '1':
+          viewPatientPrescriptions();
+          break;
+        case '0':
+          return;
+      }
+    }
+  }
+
+  void viewPatientPrescriptions() {
     clearScreen();
-    showHeader('YOUR PATIENTS');
+    showHeader('VIEW PATIENT PRESCRIPTIONS');
 
     final myPrescriptions = system.getPrescriptionsByDoctorId(system.currentDoctor!.id);
     final patientIds = myPrescriptions.map((p) => p.patientId).toSet();
 
     if (patientIds.isEmpty) {
       print('You Have No Patients Yet.');
-    } else {
-      for (var patientId in patientIds) {
-        final patient = system.getPatientById(patientId);
-        if (patient != null) {
-          print('• ${patient.name}');
-          print('  Phone: ${patient.phoneNumber}');
-          print('  Gender: ${patient.gender.toString().split('.').last}');
-          print('');
+      pause();
+      return;
+    }
+
+    print('YOUR PATIENTS:');
+    var index = 1;
+    for (var patientId in patientIds) {
+      final patient = system.getPatientById(patientId);
+      if (patient != null) {
+        print('$index. ${patient.name} (ID: ${patient.id})');
+        index++;
+      }
+    }
+
+    final patientId = readInput('\nEnter Patient ID: ');
+    final patient = system.getPatientById(patientId);
+
+    if (patient == null) {
+      print('Patient Not Found.');
+      pause();
+      return;
+    }
+
+    final doctorPrescriptions = myPrescriptions.where((p) => p.patientId == patientId).toList();
+
+    if (doctorPrescriptions.isEmpty) {
+      print('No Prescriptions Found for This Patient.');
+      pause();
+      return;
+    }
+
+    clearScreen();
+    showHeader('PRESCRIPTIONS FOR: ${patient.name}');
+
+    for (var i = 0; i < doctorPrescriptions.length; i++) {
+      final rx = doctorPrescriptions[i];
+      print('${i + 1}. Prescription ID: ${rx.id}');
+      print('   Date: ${rx.issuedDate.toString().substring(0, 10)}');
+      print('   Condition: ${rx.patientCondition}');
+      print('   Items: ${rx.items.length}');
+      print('   Notes: ${rx.notes.isEmpty ? "None" : rx.notes}');
+      
+      if (rx.items.isNotEmpty) {
+        print('   Medicines:');
+        for (var item in rx.items) {
+          final medicine = system.getMedicineById(item.medicineId);
+          print('     - ${medicine?.name ?? "Unknown"} (${item.quantity}x)');
         }
       }
+      print('');
     }
 
     pause();
