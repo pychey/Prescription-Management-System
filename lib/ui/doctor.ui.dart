@@ -3,8 +3,6 @@ import 'package:prescription_management_system/domain/prescription.domain.dart';
 import 'package:prescription_management_system/domain/prescription_item.domain.dart';
 import 'package:prescription_management_system/domain/prescription_system.domain.dart';
 import 'package:prescription_management_system/ui/base.ui.dart';
-
-// NEED PRESCRIPTION VIEW LINE 282
 class DoctorConsole extends BaseConsole {
   DoctorConsole(PrescriptionSystem system) : super(system);
 
